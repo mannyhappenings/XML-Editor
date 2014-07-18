@@ -71,12 +71,20 @@
 		input.focus();
 		input.onchange = changeHandler;
 		input.onblur = changeHandler;
+		input.onkeydown = function(e){
+			var key = e.keyCode | e.which;
+			if(key==13){
+				changeHandler.apply(this, e);
+			}
+		}
 		this.onclick = function(e){
-			e.stopPropagation();
+			if(e)
+				e.stopPropagation();
 		}
 	}
 	var changeHandler = function(e){
-		e.stopPropagation();
+		if(e)
+			e.stopPropagation();
 		this.parentNode.insertBefore(document.createTextNode(this.value), this);
 		this.parentNode.onclick = handler;
 		this.parentNode.removeChild(this);
