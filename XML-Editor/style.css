@@ -1,0 +1,60 @@
+#xml-document ul{
+  list-style: none;
+  position: relative;
+  display: block;
+}
+
+#xml-document li{
+  margin: 3px 0px;
+}
+#xml-document ul{
+  border-left: 1px dashed #0a0;
+/*   margin-left: 1px; */
+}
+#xml-document ul:hover{
+  border-left: 1px solid #0c0;
+/*   margin-left: 0px; */
+}
+#xml-document li input{
+  border: 0px solid #ccc;
+  padding: 2px 5px;
+  background-color: #ff0;
+}
+
+.textContent, .nodeName{
+  display: inline-block;
+  min-width: 50px;
+  padding: 3px 10px;
+/*   background-color: rgba(0, 0, 0, 0.1); */
+  border: 1px solid #ccc;
+}
+.nodeName:before{
+  content: "nodeName \"";
+  width: 20px;
+  color: #a00;
+}
+.nodeName:after{
+  content: "\"";
+  width: 20px;
+  color: #a00;
+}
+#xml-document ul.contextMenu {
+  display: block;
+  position: absolute;
+  z-index: 10000;
+  background-color: #fff;
+  border: 0;
+  margin: 0px;
+  padding: 0px;
+  box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.4);
+}
+#xml-document ul.contextMenu li{
+  border-bottom: 1px solid #eee;
+  padding: 5px;
+  margin: 0px;
+  cursor: pointer;
+}
+
+ul.contextMenu li:hover{
+  background-color: #48f;
+}
