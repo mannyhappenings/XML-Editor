@@ -101,6 +101,16 @@
 	    parent.appendChild(ul);
 	    ul.appendChild(li);
 	    li.appendChild(span);
+		span.onclick = function(e){
+			e.stopPropagation();
+		}
+		span.ondblclick = handler;
+		span.refer = child.childNodes[0];
+		span.oncontextmenu = function(e){
+				e.preventDefault();
+  			// console.log("context menu on '"+span.innerHTML+"'");
+		  	context.show(this);
+		}
 		if(nodeName)
 	    	span.innerHTML = child.nodeName;
 	    else {
@@ -167,6 +177,16 @@
 		    clickHandler: function(e){
 		        insertNode(this.parentNode.parentNode.parentNode);
 		    }
+		}, {
+		    text: "Expand node",
+		    clickHandler: function(e){
+		        expand.apply(this.parentNode.parentNode.parentNode);
+		    }
+		}, {
+		    text: "Collapse node",
+		    clickHandler: function(e){
+		        collapse.apply(this.parentNode.parentNode.parentNode);
+		    }
 		}]
 	);
 	window.addEventListener('click', function(){ 
@@ -203,32 +223,101 @@
 	function showChildrenOneLevel(child, parent){
 		console.log(child, parent);
 	  if(!child.children.length){
-	    var li = getElement('li');
-	    li.innerHTML = '<span class="nodeName">'+child.nodeName+'</span>';
-	    parent.appendChild(li);
+	    // var li = getElement('li');
+	    // li.innerHTML = '<span class="nodeName">'+child.nodeName+'</span>';
+	    // parent.appendChild(li);
 	    if(child.textContent){
-	      var ul = getElement('ul');
-	      li = getElement('li');
-	      li.innerHTML = li.innerHTML = '<span class="textContent">'+child.textContent.replace(RegExp(" |\n", 'g'), function(str){ return (str==" ")? "&nbsp;":((str=="\n")? "<br />": str);})+'</span>';
-	      ul.appendChild(li);
-	      parent.appendChild(ul);
+			var ul = getElement('ul');
+			li = getElement('li');
+			var span = getElement('span');
+			span.classList.add('textContent');
+			span.innerHTML = child.textContent.replace(RegExp(" |\n", 'g'), function(str){ 
+													return (str==" ")? "&nbsp;": ( (str=="\n")? "<br />": str);
+												});
+			li.appendChild(span);
+			ul.appendChild(li);
+			// li.onclick = function(e){
+			// 	e.stopPropagation();
+			// }
+			span.ondblclick = handler;
+			span.onclick = function(e){
+				e.stopPropagation();
+			}
+			span.refer = child.childNodes[0];
+			span.oncontextmenu = function(e){
+  				e.preventDefault();
+	  			// console.log("context menu on '"+span.innerHTML+"'");
+			  	context.show(this);
+			}
+			parent.appendChild(ul);
 	    }
 	  } else {
 	    var children = child.children;
 	    var ul = getElement('ul');
-	    var li = getElement('li');
-	    li.innerHTML = '<span class="nodeName">'+child.nodeName+'</span>';
-	    parent.appendChild(li);
 	    parent.appendChild(ul)
 	    var length = children.length;
+	    var span = null;
 	    for(var i=0; i<length; i++) {
-	      li = getElement('li');
-	      li.innerHTML = '<span class="nodeName">'+children[i].nodeName+'</span>';
-	      ul.appendChild(li);
+			li = getElement('li');
+			span = getElement('span');
+			span.classList.add('nodeName');
+			span.innerHTML = children[i].nodeName;
+			li.appendChild(span);
+			span.ondblclick = handler;
+			span.onclick = function(e){
+				e.stopPropagation();
+			}
+			span.oncontextmenu = function(e){
+  				e.preventDefault();
+	  			// console.log("context menu on '"+span.innerHTML+"'");
+			  	context.show(this);
+			}
+			li.refer = children[i];
+			// li.addEventListener('click', expand);
+	      	ul.appendChild(li);
 	    }
 	  }
+	/*
+	  var iterator = $("#xml-document").getElementsByClassName('nodeName')['@@iterator']();
+		var temp = null;
+		while(!(temp=iterator.next()).done) {
+			(function(){
+				var span = temp.value;
+				temp.value.oncontextmenu = function(e){
+	  				e.preventDefault();
+		  			console.log("context menu on '"+span.innerHTML+"'");
+				  	context.show(span);
+				}
+				temp.value.ondblclick = handler;
+			})();
+			temp.done = true;
+		}
+	*/
 	}
-
+	function expand(e){
+		if(e)
+    		e.stopPropagation();
+    	// console.log("LI Clicked.");
+    	if(!this.refer){
+    		alert("Cannot expand this node.");
+    		return;
+    	}
+    	showChildrenOneLevel(this.refer, this);
+    	// this.removeEventListener('click', expand);
+    	// this.addEventListener('click', collapse);
+    }
+    function collapse(e){
+    	if(e)
+    		e.stopPropagation();
+    	// console.log(this, this.querySelector("li>ul"), "LI Clicked.");
+    	if(!this.querySelector("li>ul")){
+    		alert("Cannot collapse this node.");
+    		return;
+    	}
+    	this.removeChild(this.querySelector("li>ul"));
+    	// this.removeEventListener('click', collapse);
+    	// this.addEventListener('click', expand);
+    }
 
 	function showXMLDocument(xmldoc){
 		console.log(xmldoc);
@@ -246,20 +335,23 @@
 		$("#xml-document").innerHTML = "";
 		//$("#xml-document").appendChild(span);
 		var ul = getElement('UL')
-		$("#xml-document").appendChild(ul);
-		showChildrenOneLevel(root, ul);
-		var iterator = $("#xml-document").getElementsByClassName('nodeName')['@@iterator']();
-		var temp = null;
-		while(!(temp=iterator.next()).done) {
-			(function(){
-				var span = temp.value;
-				temp.value.oncontextmenu = function(e){
-	  				e.preventDefault();
-		  			console.log("context menu on '"+span.innerHTML+"'");
-				  	context.show(span);
-				}
-				temp.value.ondblclick = handler;
-			})();
-			temp.done = true;
+		var li = getElement('li');
+		span = getElement('span');
+		span.classList.add('nodeName');
+		span.innerHTML = root.nodeName;
+		li.appendChild(span);
+		span.ondblclick = handler;
+		span.onclick = function(e){
+			e.stopPropagation();
 		}
+		span.oncontextmenu = function(e){
+				e.preventDefault();
+  			// console.log("context menu on '"+span.innerHTML+"'");
+		  	context.show(this);
+		}
+		li.refer = root;
+		// li.addEventListener('click', expand);
+      	ul.appendChild(li);
+		$("#xml-document").appendChild(ul);
+		showChildrenOneLevel(root, li);
 	}

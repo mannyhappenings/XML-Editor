@@ -8,11 +8,11 @@
   margin: 3px 0px;
 }
 #xml-document ul{
-  border-left: 1px dashed #0a0;
+  border-left: 1px dashed rgba(0, 200, 0, 0.3);
 /*   margin-left: 1px; */
 }
-#xml-document ul:hover{
-  border-left: 1px solid #0c0;
+#xml-document .nodeName:hover+ul{
+  border-left: 1px dashed rgba(0, 100, 200, 1);
 /*   margin-left: 0px; */
 }
 #xml-document li input{
@@ -38,6 +38,16 @@
   width: 20px;
   color: #a00;
 }
+.textContent:before{
+  content: "#text \"";
+  width: 20px;
+  color: #a00;
+}
+.textContent:after{
+  content: "\"";
+  width: 20px;
+  color: #a00;
+}
 #xml-document ul.contextMenu {
   display: block;
   position: absolute;
@@ -57,4 +67,40 @@
 
 ul.contextMenu li:hover{
   background-color: #48f;
+}
+#xml-document ul.contextMenu:after{
+  position: absolute;
+  z-index: -1;
+  top: -5px;
+  display: inline-block;
+  content: "";
+  left: 45%;
+  width: 10px;
+  height: 10px;
+  background-color: #fff;
+  box-shadow: -2px -2px 2px rgba(0,0,0, 0.3);
+  transform: rotate(45deg);
+}
+ul.contextMenu li:before{
+   content: unset;
+}
+
+li{
+  position: relative;
+}
+
+li:before {
+  position: absolute;
+  top: 10px;
+  left: -40px;
+  display: inline-block;
+  content: "";
+  width: 10px;
+  height: 0px;
+/*   background-color: #0ff; */
+/*   border-radius: 10px;  */
+  border: 0;
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+  border-left: 10px solid rgba(0, 150, 0, 0.6);
 }
